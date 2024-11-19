@@ -1,4 +1,3 @@
-## controller.py
 from model import SoundData
 from view import View
 import tkinter as tk
@@ -19,4 +18,4 @@ class Controller:
                 info = self.model.get_audio_info()
                 self.view.update_info(info)
             else:
-                self.view.update_status("Failed to load audio file.")
+                self.view.update_status("Failed to load or process audio file.")

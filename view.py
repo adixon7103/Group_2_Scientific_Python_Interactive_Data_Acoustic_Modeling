@@ -1,4 +1,3 @@
-## view.py
 import tkinter as tk
 from tkinter import filedialog
 
@@ -29,7 +28,7 @@ class View:
         """Open file dialog to choose an audio file"""
         file_path = filedialog.askopenfilename(
             title="Select an audio file",
-            filetypes=[("Audio Files", "*.wav;*mp3")]
+            filetypes=[("Audio Files", "*.wav;*.mp3")]
         )
         if file_path:
             return file_path
