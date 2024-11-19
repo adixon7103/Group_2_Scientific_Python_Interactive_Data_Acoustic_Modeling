@@ -49,18 +49,17 @@ class SoundData:
     def clean_data(self):
         """Clean the audio data by checking for missing values and handling channels."""
         if np.any(np.isnan(self.audio_data)):
-            # Option 1: Fill NaN values with zeros (can be customized as needed)
+            #Fill NaN values with zeros (can be customized as needed)
             self.audio_data = np.nan_to_num(self.audio_data)
             print("Missing values in audio data have been replaced with zeros.")
 
-        # If audio has multiple channels, convert to mono by averaging the channels
+        # Conversion to mono
         if len(self.audio_data.shape) > 1:
             if self.audio_data.shape[0] > 1:
                 print("Stereo to mono conversion: Averaging channels.")
                 self.audio_data = np.mean(self.audio_data, axis=0)
 
-        # Optionally handle other cleaning steps like normalization or trimming silence
-        # For example: self.audio_data = librosa.effects.trim(self.audio_data)[0]
+        # Other handlers placeholder
 
     def get_audio_info(self):
         """Return basic audio info as a dictionary"""
