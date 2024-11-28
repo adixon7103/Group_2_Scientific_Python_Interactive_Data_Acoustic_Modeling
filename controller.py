@@ -23,6 +23,9 @@ class Controller:
                 self.view.update_info(info)
                 # Now display the waveform
                 self.display_waveform()
+                # Compute and display the highest resonance frequency
+                peak_frequency = self.model.compute_highest_resonance()
+                self.view.update_frequency(peak_frequency)
             else:
                 self.view.update_status("Failed to load or process audio file.")
 

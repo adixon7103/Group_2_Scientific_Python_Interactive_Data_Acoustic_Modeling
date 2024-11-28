@@ -4,8 +4,6 @@ import pandas as pd
 import os
 import tempfile
 from scipy.io.wavfile import write
-from pydub.utils import mediainfo  # This can help us gather metadata information
-
 
 class SoundData:
     def __init__(self):
@@ -22,16 +20,11 @@ class SoundData:
             if file_path.lower().endswith('.mp3'):
                 file_path = self.convert_mp3_to_wav(file_path)
 
-            # Check for metadata (optional)
-            self.check_metadata(file_path)
-
-            # Load the audio file with librosa
             self.audio_data, self.sample_rate = librosa.load(file_path, sr=None)
-
-            # Handle multi-channel audio and metadata
-            self.clean_data()
-
             self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
+
+            # Clean the audio data (e.g., handle missing values and channels)
+            self.clean_data()
 
             return True
         except Exception as e:
@@ -52,46 +45,44 @@ class SoundData:
             print(f"Error converting MP3 to WAV: {e}")
             raise
 
-    def check_metadata(self, file_path):
-        """Check and print metadata information (optional)"""
-        try:
-            # Using pydub's mediainfo to gather metadata from the file
-            metadata = mediainfo(file_path)
-            print("Metadata:", metadata)  # Prints metadata for debugging
-
-            # You can add checks for specific metadata here if needed
-            # For example, checking if there is any non-empty title, artist, etc.
-            if 'tags' in metadata and metadata['tags']:
-                print("Tags found in metadata:", metadata['tags'])
-            else:
-                print("No metadata tags found.")
-        except Exception as e:
-            print(f"Error reading metadata: {e}")
-            pass  # Metadata handling is optional, so we can skip if this fails
-
     def clean_data(self):
         """Clean the audio data by checking for missing values and handling channels."""
         if np.any(np.isnan(self.audio_data)):
-            # Fill NaN values with zeros (can be customized as needed)
+            #Fill NaN values with zeros (can be customized as needed)
             self.audio_data = np.nan_to_num(self.audio_data)
             print("Missing values in audio data have been replaced with zeros.")
 
-        # Handle multi-channel (stereo) to mono conversion
+        # Conversion to mono
         if len(self.audio_data.shape) > 1:
             if self.audio_data.shape[0] > 1:
                 print("Stereo to mono conversion: Averaging channels.")
                 self.audio_data = np.mean(self.audio_data, axis=0)
-                # Ensure that the audio data is now mono (1D array)
-            else:
-                print("Single channel audio detected.")
 
-        # Optional: Perform any other required cleaning steps
+        # Other handlers placeholder
 
     def get_audio_info(self):
         """Return basic audio info as a dictionary"""
         return {
             'Duration (s)': self.duration,
             'Sample Rate (Hz)': self.sample_rate,
-            'Number of Samples': len(self.audio_data),
-            'Channels': 1 if len(self.audio_data.shape) == 1 else 2  # Add channel info
+            'Number of Samples': len(self.audio_data)
         }
+
+    def compute_highest_resonance(self):
+        """Compute the highest resonance frequency from the audio signal"""
+        # Apply FFT to convert the time-domain signal into the frequency domain
+        fft_result = np.fft.fft(self.audio_data)
+        fft_magnitude = np.abs(fft_result)  # Magnitude of the FFT result
+        frequencies = np.fft.fftfreq(len(fft_magnitude), 1 / self.sample_rate)  # Frequency values for FFT
+
+        # Ignore the negative frequencies
+        positive_frequencies = frequencies[:len(frequencies)//2]
+        positive_magnitudes = fft_magnitude[:len(frequencies)//2]
+
+        # Find the index of the highest peak in the positive frequencies
+        peak_index = np.argmax(positive_magnitudes)
+
+        # The frequency corresponding to the highest peak
+        peak_frequency = positive_frequencies[peak_index]
+
+        return peak_frequency

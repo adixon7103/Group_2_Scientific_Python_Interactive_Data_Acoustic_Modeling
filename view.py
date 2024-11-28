@@ -19,6 +19,10 @@ class View:
         self.waveform_frame = tk.Frame(root)
         self.waveform_frame.pack(pady=20, fill=tk.BOTH, expand=True)
 
+        # Add a label for the highest resonance frequency
+        self.frequency_label = tk.Label(root, text="Peak Frequency (Hz): Not computed yet")
+        self.frequency_label.pack(pady=20)
+
     def update_status(self, message):
         """Update the status label to show a message"""
         self.status_label.config(text=message)
@@ -38,3 +42,7 @@ class View:
             return file_path
         else:
             return None
+
+    def update_frequency(self, frequency):
+        """Update the frequency label with the highest resonance frequency"""
+        self.frequency_label.config(text=f"Peak Frequency (Hz): {frequency:.2f}")
