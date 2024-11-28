@@ -15,6 +15,10 @@ class View:
         self.info_label = tk.Label(root, text="")
         self.info_label.pack(pady=20)
 
+        # Create a frame to hold the waveform plot
+        self.waveform_frame = tk.Frame(root)
+        self.waveform_frame.pack(pady=20, fill=tk.BOTH, expand=True)
+
     def update_status(self, message):
         """Update the status label to show a message"""
         self.status_label.config(text=message)
