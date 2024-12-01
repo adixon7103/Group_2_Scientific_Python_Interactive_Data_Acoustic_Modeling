@@ -26,6 +26,7 @@ class SoundData:
             if file_path.lower().endswith('.wav'):
                 file_path = self.remove_metadata(file_path)
 
+            # Load the audio file using librosa
             self.audio_data, self.sample_rate = librosa.load(file_path, sr=None)
             self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
 
@@ -66,21 +67,17 @@ class SoundData:
             raise
 
     def clean_data(self):
-        """Clean the audio data by checking for missing values and handling channels."""
-        if np.any(np.isnan(self.audio_data)):
-            #Fill NaN values with zeros (can be customized as needed)
+         """Clean the audio data"""
+         if self.audio_data is not None:
+            # Ensure the audio data is a numpy array
+            self.audio_data = np.asarray(self.audio_data)
+
+            # Handle missing values by replacing NaNs with zeros
             self.audio_data = np.nan_to_num(self.audio_data)
-            print("Missing values in audio data have been replaced with zeros.")
 
-        #Remove metadata from the audio data
-        self.audio_data = self.audio_data[librosa.get_duration(y=self.audio_data, sr=self.sample_rate):]
-
-        # Conversion to mono
-        if len(self.audio_data.shape) > 1:
-            if self.audio_data.shape[0] > 1:
-                print("Stereo to mono conversion: Averaging channels.")
-                self.audio_data = np.mean(self.audio_data, axis=0)
-
+            # If stereo, take only one channel
+            if self.audio_data.ndim > 1:
+                self.audio_data = self.audio_data[:, 0]
 
 
     def get_audio_info(self):
@@ -90,25 +87,6 @@ class SoundData:
             'Sample Rate (Hz)': self.sample_rate,
             'Number of Samples': len(self.audio_data)
         }
-
-    def compute_highest_resonance(self):
-        """Compute the highest resonance frequency from the audio signal"""
-        # Apply FFT to convert the time-domain signal into the frequency domain
-        fft_result = np.fft.fft(self.audio_data)
-        fft_magnitude = np.abs(fft_result)  # Magnitude of the FFT result
-        frequencies = np.fft.fftfreq(len(fft_magnitude), 1 / self.sample_rate)  # Frequency values for FFT
-
-        # Ignore the negative frequencies
-        positive_frequencies = frequencies[:len(frequencies)//2]
-        positive_magnitudes = fft_magnitude[:len(frequencies)//2]
-
-        # Find the index of the highest peak in the positive frequencies
-        peak_index = np.argmax(positive_magnitudes)
-
-        # The frequency corresponding to the highest peak
-        peak_frequency = positive_frequencies[peak_index]
-
-        return peak_frequency
     
     def compute_low_mid_high_freq(self):
         # Apply FFT to convert the time-domain signal into the frequency domain
@@ -128,8 +106,24 @@ class SoundData:
         high_freq_indices = np.where((frequencies >= high_freq_range[0]) & (frequencies < high_freq_range[1]))[0]
 
         # Compute the total power in each frequency range
-        low_freq_power = np.sum(fft_magnitude[low_freq_indices])
-        mid_freq_power = np.sum(fft_magnitude[mid_freq_indices])
-        high_freq_power = np.sum(fft_magnitude[high_freq_indices])
+        low_freq_power = np.sum(fft_magnitude[low_freq_indices] ** 2)
+        mid_freq_power = np.sum(fft_magnitude[mid_freq_indices] ** 2)
+        high_freq_power = np.sum(fft_magnitude[high_freq_indices] ** 2)
 
         return low_freq_power, mid_freq_power, high_freq_power
+    
+    def compute_highest_resonance(self):
+        # Ensure audio data is loaded
+        if self.audio_data is None:
+            raise ValueError("Audio data is not loaded")
+
+        # Apply FFT to convert the time-domain signal into the frequency domain
+        fft_result = np.fft.fft(self.audio_data)
+        fft_magnitude = np.abs(fft_result)
+        frequencies = np.fft.fftfreq(len(fft_magnitude), 1 / self.sample_rate)
+
+        # Find the peak frequency
+        peak_index = np.argmax(fft_magnitude)
+        peak_frequency = frequencies[peak_index]
+
+        return peak_frequency

@@ -23,6 +23,10 @@ class View:
         self.frequency_label = tk.Label(root, text="Peak Frequency (Hz): Not computed yet")
         self.frequency_label.pack(pady=20)
 
+        # Add a button to cycle through the frequency plot
+        self.cycle_button = tk.Button(root, text="Cycle Frequency Plot")
+        self.cycle_button.pack(pady=10)
+
     def update_status(self, message):
         """Update the status label to show a message"""
         self.status_label.config(text=message)
