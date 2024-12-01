@@ -26,6 +26,9 @@ class Controller:
                 # Compute and display the highest resonance frequency
                 peak_frequency = self.model.compute_highest_resonance()
                 self.view.update_frequency(peak_frequency)
+                # Display the waveplot of the low, mid, and high frequency components
+                self.display_low_mid_high_waveplot()
+
             else:
                 self.view.update_status("Failed to load or process audio file.")
 
@@ -46,3 +49,33 @@ class Controller:
         canvas = FigureCanvasTkAgg(fig, master=self.view.waveform_frame)  # Plot inside waveform_frame
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def display_low_mid_high_waveplot(self):
+        # Display the waveplot of the low, mid, and high frequency components
+        low_freq_power, mid_freq_power, high_freq_power = self.model.compute_low_mid_high_freq()
+
+        # Apply FFT to convert the time-domain signal into the frequency domain
+        fft_result = np.fft.fft(self.audio_data)
+        fft_magnitude = np.abs(fft_result)
+        frequencies = np.fft.fftfreq(len(fft_magnitude), 1 / self.sample_rate)
+
+        # Define frequency ranges
+        low_freq_range = (0, 1000)
+        mid_freq_range = (1000, 4000)
+        high_freq_range = (4000, 20000)
+
+        # Find the indices of the frequencies within the ranges
+        low_freq_indices = np.where((frequencies >= low_freq_range[0]) & (frequencies < low_freq_range[1]))[0]
+        mid_freq_indices = np.where((frequencies >= mid_freq_range[0]) & (frequencies < mid_freq_range[1]))[0]
+        high_freq_indices = np.where((frequencies >= high_freq_range[0]) & (frequencies < high_freq_range[1]))[0]
+
+        # Plot the waveforms for the low, mid, and high frequency ranges
+        plt.figure(figsize=(12, 6))
+        plt.bar(['Low Frequency', 'Mid Frequency', 'High Frequency'], [low_freq_power, mid_freq_power, high_freq_power])
+        plt.xlabel('Frequency Range')
+        plt.ylabel('Power')
+        plt.title('Low, Mid, and High Frequency Components')
+        plt.grid(True)
+        plt.show()
+
+    
