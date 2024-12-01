@@ -12,6 +12,8 @@ class Controller:
         self.view.load_button.config(command=self.load_audio)
         self.view.cycle_button.config(command=self.cycle_frequency_plot)
         self.view.combine_button.config(command=self.combine_plots)
+        self.view.display_waveform_button.config(command=self.display_waveform_in_new_window)
+        self.view.display_bar_graph_button.config(command=self.display_bar_graph)
         self.current_freq_range = 'low'  # Initialize with 'low' frequency range
         self.bar_graph_created = False  # Flag to check if the bar graph has been created
 
@@ -106,10 +108,6 @@ class Controller:
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
-        if not self.bar_graph_created:
-            self.create_bar_graph(low_freq_power, mid_freq_power, high_freq_power)
-            self.bar_graph_created = True
-
     def create_bar_graph(self, low_freq_power, mid_freq_power, high_freq_power):
         """Create a bar graph of the low, mid, and high frequency power in a separate window"""
         # Create a new Toplevel window
@@ -169,5 +167,48 @@ class Controller:
 
         # Convert the Matplotlib plot to a Tkinter widget
         canvas = FigureCanvasTkAgg(fig, master=self.view.plot_frame)  # Plot inside plot_frame
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def display_waveform_in_new_window(self):
+        """Display the waveform of the cleaned audio data in a new window"""
+        # Get the cleaned audio data from the model
+        audio_data = self.model.audio_data
+        sample_rate = self.model.sample_rate
+
+        # Create a new Toplevel window
+        waveform_window = tk.Toplevel(self.view.root)
+        waveform_window.title("Waveform")
+
+        # Plot the waveform using Matplotlib
+        fig, ax = plt.subplots(figsize=(8, 3))
+        ax.plot(np.linspace(0, len(audio_data) / sample_rate, len(audio_data)), audio_data)
+        ax.set_title("Waveform of the Audio File")
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Amplitude")
+
+        # Convert the Matplotlib plot to a Tkinter widget
+        canvas = FigureCanvasTkAgg(fig, master=waveform_window)  # Plot inside the new window
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    
+    def display_bar_graph(self):
+        """Display the bar graph of the low, mid, and high frequency power in a separate window"""
+        # Compute the low, mid, and high frequency power
+        low_freq_power, mid_freq_power, high_freq_power = self.model.compute_low_mid_high_freq()
+
+        # Create a new Toplevel window
+        bar_graph_window = tk.Toplevel(self.view.root)
+        bar_graph_window.title("Frequency Power Distribution")
+
+        fig, ax = plt.subplots(figsize=(8, 3))
+        ax.bar(['Low Frequency', 'Mid Frequency', 'High Frequency'], [low_freq_power, mid_freq_power, high_freq_power])
+        ax.set_xlabel('Frequency Range')
+        ax.set_ylabel('Power')
+        ax.set_title('Frequency Power Distribution')
+        ax.grid(True)
+
+        # Convert the Matplotlib plot to a Tkinter widget
+        canvas = FigureCanvasTkAgg(fig, master=bar_graph_window)  # Plot inside the new window
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)

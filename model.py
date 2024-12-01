@@ -85,7 +85,8 @@ class SoundData:
         return {
             'Duration (s)': self.duration,
             'Sample Rate (Hz)': self.sample_rate,
-            'Number of Samples': len(self.audio_data)
+            'Number of Samples': len(self.audio_data),
+            'Difference (s)': self.compute_rt60() - 0.5
         }
     
     def compute_low_mid_high_freq(self):
@@ -127,3 +128,32 @@ class SoundData:
         peak_frequency = frequencies[peak_index]
 
         return peak_frequency
+
+    def compute_rt60(self):
+        """Compute the RT60 value of the audio data"""
+        if self.audio_data is None:
+            raise ValueError("Audio data is not loaded")
+
+        # Compute the energy decay curve
+        energy = np.cumsum(self.audio_data[::-1] ** 2)[::-1]
+        energy_db = 10 * np.log10(energy / np.max(energy))
+
+        # Find the time where the energy decays by 60 dB
+        rt60_index = np.where(energy_db <= -60)[0][0]
+        rt60_time = rt60_index / self.sample_rate
+
+        return rt60_time
+
+    def reduce_rt60(self, target_rt60=0.5):
+        """Reduce the RT60 value to the target RT60"""
+        if self.audio_data is None:
+            raise ValueError("Audio data is not loaded")
+
+        # Compute the current RT60 value
+        current_rt60 = self.compute_rt60()
+
+        # Apply a simple exponential decay to reduce the RT60 value
+        decay_factor = target_rt60 / current_rt60
+        self.audio_data *= np.exp(-np.arange(len(self.audio_data)) / (self.sample_rate * decay_factor))
+
+        return self.audio_data

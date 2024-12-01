@@ -35,6 +35,15 @@ class View:
         self.combine_button = tk.Button(self.button_frame, text="Combine Plots")
         self.combine_button.pack(side=tk.LEFT, padx=5)
 
+        # Add a button to display the waveform in a new window
+        self.display_waveform_button = tk.Button(self.button_frame, text="Display Waveform in New Window")
+        self.display_waveform_button.pack(side=tk.LEFT, padx=5)
+
+        # Add a button to display the bar graph
+        self.display_bar_graph_button = tk.Button(self.button_frame, text="Display Bar Graph")
+        self.display_bar_graph_button.pack(side=tk.LEFT, padx=5)
+
+
     def update_status(self, message):
         """Update the status label to show a message"""
         self.status_label.config(text=message)
