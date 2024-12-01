@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 import tempfile
+import matplotlib.pyplot as plt
 from scipy.io.wavfile import write
 
 class SoundData:
@@ -86,3 +87,55 @@ class SoundData:
         peak_frequency = positive_frequencies[peak_index]
 
         return peak_frequency
+    
+    def compute_low_mid_high_freq(self):
+        # Apply FFT to convert the time-domain signal into the frequency domain
+        fft_result = np.fft.fft(self.audio_data)
+        fft_magnitude = np.abs(fft_result)
+        frequencies = np.fft.fftfreq(len(fft_magnitude), 1 / self.sample_rate)
+
+
+        # Define frequency ranges
+        low_freq_range = (0, 1000)
+        mid_freq_range = (1000, 4000)
+        high_freq_range = (4000, 20000)
+
+        # Find the indices of the frequencies within the ranges
+        low_freq_indices = np.where((frequencies >= low_freq_range[0]) & (frequencies < low_freq_range[1]))[0]
+        mid_freq_indices = np.where((frequencies >= mid_freq_range[0]) & (frequencies < mid_freq_range[1]))[0]
+        high_freq_indices = np.where((frequencies >= high_freq_range[0]) & (frequencies < high_freq_range[1]))[0]
+
+        # Compute the total power in each frequency range
+        low_freq_power = np.sum(fft_magnitude[low_freq_indices])
+        mid_freq_power = np.sum(fft_magnitude[mid_freq_indices])
+        high_freq_power = np.sum(fft_magnitude[high_freq_indices])
+
+        return low_freq_power, mid_freq_power, high_freq_power
+    
+    def display_low_mid_high_waveplot(self):
+        # Apply FFT to convert the time-domain signal into the frequency domain
+        fft_result = np.fft.fft(self.audio_data)
+        fft_magnitude = np.abs(fft_result)
+        frequencies = np.fft.fftfreq(len(fft_magnitude), 1 / self.sample_rate)
+
+        # Define frequency ranges
+        low_freq_range = (0, 1000)
+        mid_freq_range = (1000, 4000)
+        high_freq_range = (4000, 20000)
+
+        # Find the indices of the frequencies within the ranges
+        low_freq_indices = np.where((frequencies >= low_freq_range[0]) & (frequencies < low_freq_range[1]))[0]
+        mid_freq_indices = np.where((frequencies >= mid_freq_range[0]) & (frequencies < mid_freq_range[1]))[0]
+        high_freq_indices = np.where((frequencies >= high_freq_range[0]) & (frequencies < high_freq_range[1]))[0]
+
+        # Plot the waveforms for the low, mid, and high frequency ranges
+        plt.figure(figsize=(12, 6))
+        plt.plot(frequencies[low_freq_indices], fft_magnitude[low_freq_indices], label='Low Frequency')
+        plt.plot(frequencies[mid_freq_indices], fft_magnitude[mid_freq_indices], label='Mid Frequency')
+        plt.plot(frequencies[high_freq_indices], fft_magnitude[high_freq_indices], label='High Frequency')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Magnitude')
+        plt.title('Low, Mid, and High Frequency Components')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
