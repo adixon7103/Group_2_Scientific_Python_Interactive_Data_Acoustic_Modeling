@@ -1,7 +1,5 @@
 import librosa
 import numpy as np
-import pandas as pd
-import os
 import tempfile
 import matplotlib.pyplot as plt
 from scipy.io.wavfile import write
