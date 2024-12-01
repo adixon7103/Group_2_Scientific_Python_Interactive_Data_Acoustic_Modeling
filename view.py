@@ -16,16 +16,24 @@ class View:
         self.info_label.pack(pady=20)
 
         # Create a frame to hold the waveform plot
-        self.waveform_frame = tk.Frame(root)
-        self.waveform_frame.pack(pady=20, fill=tk.BOTH, expand=True)
+        self.plot_frame = tk.Frame(root)
+        self.plot_frame.pack(pady=20, fill=tk.BOTH, expand=True)
+
+        # Create a frame to hold the buttons
+        self.button_frame = tk.Frame(root)
+        self.button_frame.pack(pady=10)
 
         # Add a label for the highest resonance frequency
         self.frequency_label = tk.Label(root, text="Peak Frequency (Hz): Not computed yet")
         self.frequency_label.pack(pady=20)
 
-        # Add a button to cycle through the frequency plot
-        self.cycle_button = tk.Button(root, text="Cycle Frequency Plot")
-        self.cycle_button.pack(pady=10)
+        # Add a button to cycle through the frequency plots
+        self.cycle_button = tk.Button(self.button_frame, text="Cycle Frequency Plot")
+        self.cycle_button.pack(side=tk.LEFT, padx=5)
+
+        # Add a button to combine the plots
+        self.combine_button = tk.Button(self.button_frame, text="Combine Plots")
+        self.combine_button.pack(side=tk.LEFT, padx=5)
 
     def update_status(self, message):
         """Update the status label to show a message"""
