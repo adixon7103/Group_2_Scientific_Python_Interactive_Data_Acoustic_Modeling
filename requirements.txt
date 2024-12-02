@@ -1,8 +1,6 @@
 numpy
 scipy
 matplotlib
-seaborn
-jupyter
 tk
 librosa
 soundfile
