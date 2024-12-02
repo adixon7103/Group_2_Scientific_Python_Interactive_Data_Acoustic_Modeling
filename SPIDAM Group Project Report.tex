@@ -246,6 +246,29 @@ given timeframe.
 % 7.0 Conclusions and project summary
 \section{Conclusions and project summary}
 
+\subsection{Summary of Team Efforts and Results}
+
+Throughout this project, our team worked collaboratively to develop an interactive data acoustic modeling tool. The primary goal was to create a user-friendly application that allows users to upload, clean, and analyze audio files, providing visualizations and metrics such as waveform plots and RT60 values.
+
+Our efforts were divided into several key areas:
+
+\begin{itemize}
+    \item \textbf{File Upload and Conversion:} We implemented functionality to upload both WAV and MP3 files, converting MP3 files to WAV format as needed. This ensured compatibility and consistency in the data processing pipeline.
+    \item \textbf{Data Cleaning:} We developed methods to remove metadata and handle multi-channel audio, converting it to a single channel for analysis. This step was crucial for ensuring the accuracy of subsequent analyses.
+    \item \textbf{Waveform Visualization:} Using matplotlib, we created plots to visualize the waveform of the audio files, providing a clear representation of the amplitude of the audio signal over time.
+    \item \textbf{RT60 Calculation and Visualization:} We calculated RT60 values for low, mid, and high frequencies using the Schroeder integration method. These values were then plotted to show the reverberation time across different frequency ranges.
+    \item \textbf{Additional Analysis:} An additional plot was generated to provide a comprehensive analysis of the audio data, enhancing the insights gained from the visualizations.
+    \item \textbf{Text Output:} The system provided numerical outputs, including the time in seconds, the frequency of greatest amplitude, and RT60 differences in seconds, summarizing key metrics from the analysis.
+\end{itemize}
+
+The final product was tested thoroughly, meeting the design 
+objectives and specifications. Despite some limitations in handling
+extremely large audio files, the project successfully achieved its 
+primary goals within the given timeframe. 
+The collaborative efforts of the team members, particularly the 
+significant contributions from Rafael Casanova-Silva and Aaron Dixon, 
+were instrumental in the project's success.
+
 % 7.1 Individual Contribution Table
 \subsection{Individual Contribution Table (Based on Git Contributions)}
 \begin{table}[h!]
@@ -268,14 +291,32 @@ Kevin Beltran & 0\% \\
 \subsection{Individual contribution reports}
 
 \subsubsection{Aaron Dixon}
+TBD
 \subsubsection{Rafael Casanova-Silva}
-On November 30th, I forgot about this project to be honest. I was busy with other projects and I didn't have time to work on this one
+On November 30th, I forgot about this project to be honest. I was busy with other projects (namely game expo) and I didn't have time to work on this one
 I made a big push to finish the rest of the code and get the extra credit button done. I also wrote the final report. This would most likely
 be not possible without Aaron's help. I'm grateful for his initial contributions in getting the ball rolling and would probably be stumped in
-the direction to take without his help. Aaron Dixon has been just awol, and I'm not sure what he's been up to.
+the direction to take without his help. Kevin Beltran has been just awol, and I'm not sure what he's been up to. I'm not sure if he's been working on the project or not.
 \subsubsection{Kevin Beltran}
+I, Kevin Jose Beltran, contributed by messaging out to members in the beginning and middle of the project. 
+I added tasks to the scrum board for assignment. I checked the code and saw how it functioned after each commit.
 
 % 7.3 Individual Reflection reports
 \subsection{Individual Reflection reports}
+
+\subsubsection{Aaron Dixon}
+TBD
+\subsubsection{Rafael Casanova-Silva}
+I'm happy the project was finished. I managed to pull through and do the final chunk of the project built on top of Aaron's work. I didn't really pay too much attention to the
+Asana board, since it just felt overcomplicated and the way thing were assigned they were made improbable to do as a group. Multiple parts needed other parts to be done first, and
+it led to just me doing it by myself following the flowchart provided which proveded the most guidance.
+\subsubsection{Kevin Beltran}
+
+The most challenging hurdle we faced was missing communication during the first week of the project's introduction. Rafael Casanova-Silva created the Asana project group and added Aaron Dixon and I to it during class. Or at least when I was in class. I am grateful that I was randomly selected to join this group courtesy to Mr. Navarro, and hopefully they thought of me as part of the team.  
+
+I am surprised that the main python file has little change over the time of our project. But it is because that the file just runs the other three modules. Combing matplotlib and tkinter to show on the same dialog box and create another dialog box blocked me from continuing my coding. And my code never saw the light of day in the repository. 
+
+The problem of plotting out sound waves from a classroom or enclosed environment was pretty interesting. It was exhilarating the subject in class, and I was hopeful that we as a group could accomplish this. Thankfully things worked out well and we will pass the class and have learned python graphing and tkinter. 
+
 
 \end{document}
