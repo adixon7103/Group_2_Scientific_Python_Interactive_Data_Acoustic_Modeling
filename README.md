@@ -17,6 +17,6 @@ We also suggest to download the packages in the requirements.txt file.
 
 We used ffmpeg in this code so download that seperately.
 
-##To start
+## To start
 open the main.py and run it.
 You can upload a wav/mp3 file to the load audio button. You can use our 2 samples if needed to test out.
