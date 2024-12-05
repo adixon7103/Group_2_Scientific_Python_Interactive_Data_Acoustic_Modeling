@@ -169,6 +169,11 @@ class Controller:
         canvas = FigureCanvasTkAgg(fig, master=self.view.plot_frame)  # Plot inside plot_frame
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+        # KB adding Navigation menu to graph
+        toolbar = NavigationToolbar2Tk(canvas, self.view.plot_frame)
+        toolbar.update()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
     
     def display_waveform_in_new_window(self):
         """Display the waveform of the cleaned audio data in a new window"""
